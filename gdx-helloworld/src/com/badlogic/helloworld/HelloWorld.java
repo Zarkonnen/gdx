@@ -1,6 +1,7 @@
 package com.badlogic.helloworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class HelloWorld implements ApplicationListener 
 {
-	private Mesh mesh;
 	private Texture texture;
     private SpriteBatch batch;
 
@@ -27,10 +27,23 @@ public class HelloWorld implements ApplicationListener
 	
 	@Override
 	public void render() {
+		boolean touched = Gdx.input.isTouched();
+		int ty = Gdx.input.getY();
+		int tx = Gdx.input.getX();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         //mesh.render(GL10.GL_TRIANGLES, 0, 3);
 		batch.begin();
-		batch.draw(texture, 10, 10);
+		HexCoordinateSystem hcs = new HexCoordinateSystem(100, 80, 20);
+		Pt touchedPt = hcs.find(new Pt(ty, tx));
+		for (int y = 0; y < 400; y += 10) { for (int x = 0; x < 400; x += 10) {
+			Pt loc = hcs.find(new Pt(y, x));
+			if (touched && loc.equals(touchedPt)) {
+				batch.setColor(1, 1, 1, 1);
+			} else {
+				batch.setColor((loc.y % 3) * 0.3f, (loc.x % 3) * 0.3f, 0.2f, 1.0f);
+			}
+			batch.draw(texture, x, y);
+		}}
 		batch.end();
 	}
 	
@@ -46,16 +59,8 @@ public class HelloWorld implements ApplicationListener
 	
 	@Override
 	public void create() {
-		if (mesh == null) {
-			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3,
-					"a_position"));
-
-			mesh.setVertices(new float[] { -0.5f, -0.5f, 0, 0.5f, -0.5f, 0, 0,
-					0.5f, 0 });
-			mesh.setIndices(new short[] { 0, 1, 2 });
-		}
 		if (texture == null) {
-			texture = new Texture(Gdx.files.internal("box2.png"));
+			texture = new Texture(Gdx.files.internal("dot.png"));
 		}
 		batch = new SpriteBatch();
 	}
