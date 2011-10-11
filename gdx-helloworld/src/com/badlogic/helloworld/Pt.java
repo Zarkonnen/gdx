@@ -24,4 +24,8 @@ public final class Pt {
 	public double dist(Pt p2) {
 		return Math.sqrt((y - p2.y) * (y - p2.y) + (x - p2.x) * (x - p2.x));
 	}
+	
+	public String toString() {
+		return "{\"y\":" + y + "\", \"x\":" + x + "\"}";
+	}
 }

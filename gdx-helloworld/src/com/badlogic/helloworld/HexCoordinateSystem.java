@@ -5,7 +5,7 @@ public class HexCoordinateSystem implements CoordinateSystem<Pt> {
 	private final int h;
 	private final int o;
 	
-	public HexCoordinateSystem(int w, int h, int o) {
+	public HexCoordinateSystem(int h, int w, int o) {
 		this.w = w;
 		this.h = h;
 		this.o = o;
