@@ -11,6 +11,6 @@ public class HelloWorldAndroid extends AndroidApplication {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.main);
-        initialize(new HelloWorld(), false);  
+        initialize(new HelloWorld(), false);
     }
 }

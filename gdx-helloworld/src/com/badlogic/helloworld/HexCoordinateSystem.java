@@ -78,7 +78,7 @@ public class HexCoordinateSystem implements CoordinateSystem<Pt> {
 	@Override
 	public Pt pos(Pt c) {
 		return new Pt(
-			even(c.y) ? c.y * h : c.y * h + h / 2,
+			even(c.x) ? (c.y * h) : (c.y * h + h / 2),
 			c.x * (w - o)
 		);
 	}
