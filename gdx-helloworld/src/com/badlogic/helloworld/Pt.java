@@ -1,6 +1,8 @@
 package com.badlogic.helloworld;
 
 public final class Pt {
+	public static final Pt ORIGIN = new Pt(0, 0);
+	
 	public final int y;
 	public final int x;
 	

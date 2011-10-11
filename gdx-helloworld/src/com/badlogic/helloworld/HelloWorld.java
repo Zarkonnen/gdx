@@ -2,21 +2,28 @@ package com.badlogic.helloworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 
 public class HelloWorld implements ApplicationListener 
 {
-	private Texture texture;
+	private Texture hexT;
+	private Texture shipT;
     private SpriteBatch batch;
-    private int[][] redMap = new int[12][8];
-    private int[][] greenMap = new int[12][8];
+    private Tile[][] map = new Tile[12][8];
+    private Pt selection = null;
     private int xScroll = 32;
     private int yScroll = 23;
+    private MyInput input;
+    private Sound thruster;
+    //private OrthographicCamera camera;
 
 	
 	@Override
@@ -26,54 +33,71 @@ public class HelloWorld implements ApplicationListener
 	
 	@Override
 	public void resize(int width, int height) {
-		
+		/*float ar = (float) width / (float) height * 4.0f / 3.0f;
+		camera = new OrthographicCamera(2f * ar, 2f);*/
+		/*if (width > height) {
+			camera = new OrthographicCamera(3.2f, 1.2f);
+		} else {
+			camera = new OrthographicCamera(2f, 2f);
+		}*/
+		//new OrthographicCamera(width, height);
 	}
+	
+	int[] diry = { 0,   0,   0,  0, 64,  64 };
+	int[] dirx = { 192, 128, 64, 0, 64,  0  };
 	
 	@Override
 	public void render() {
+		/*camera.update();
+        camera.apply(Gdx.gl10);
+        //batch.setProjectionMatrix(camera.projection);
+        batch.setTransformMatrix(camera.view);*/
 		int h = Gdx.graphics.getHeight();
-		boolean touchedRed = Gdx.input.isTouched(0);
-		int tyRed = h - Gdx.input.getY(0) + yScroll;
-		int txRed = Gdx.input.getX(0) + xScroll;
-		boolean touchedGreen = Gdx.input.isTouched(1);
-		int tyGreen = h - Gdx.input.getY(1) + yScroll;
-		int txGreen = Gdx.input.getX(1) + xScroll;
+		Pt clickP = input.clickP;
+		input.clickP = null;
+		clickP = clickP == null ? null : new Pt(h - clickP.y + yScroll, clickP.x + xScroll);
+		yScroll += input.pan.y;
+		xScroll -= input.pan.x;
+		input.pan = Pt.ORIGIN;
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         //mesh.render(GL10.GL_TRIANGLES, 0, 3);
 		batch.begin();
-		HexCoordinateSystem hcs = new HexCoordinateSystem(64, 46, 12);
-		Pt clPRed = touchedRed ? hcs.find(new Pt(tyRed, txRed)) : null;
-		Pt clPGreen = touchedGreen ? hcs.find(new Pt(tyGreen, txGreen)) : null;
+		HexCoordinateSystem hcs = new HexCoordinateSystem(64, 47, 12);
+		Pt clP = clickP == null ? null : hcs.find(clickP);
 		for (int y = 0; y < 12; y++) {
 			for (int x = 0; x < 8; x++) {
 				Pt c = new Pt(y, x);
 				Pt l = hcs.pos(c);
-				if (redMap[c.y][c.x] > 0) {
-					redMap[c.y][c.x]--;
+				if (c.equals(clP)) {
+					if (map[c.y][c.x].ship != null) {
+						selection = c;
+					} else {
+						int dir = selection == null ? -1 : hcs.direction(selection, c);
+						if (dir != -1) {
+							thruster.play();
+							map[selection.y][selection.x].ship.direction = dir;
+							map[c.y][c.x].ship = map[selection.y][selection.x].ship;
+							map[selection.y][selection.x].ship = null;
+							selection = c;
+						}
+					}
 				}
-				if (greenMap[c.y][c.x] > 0) {
-					greenMap[c.y][c.x]--;
+				
+				batch.draw(hexT, l.x - xScroll, l.y - yScroll);
+				
+				if (map[c.y][c.x].ship != null) {
+					if (c.equals(selection)) {
+						batch.setColor(1.0f, 0.5f, 0.5f, 1.0f);
+					}
+					batch.draw(shipT, l.x - xScroll, l.y - yScroll,
+						dirx[map[c.y][c.x].ship.direction],
+						192 - diry[map[c.y][c.x].ship.direction],
+						64,
+						64);
+					batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 				}
-				if (c.equals(clPRed)) {
-					redMap[c.y][c.x] = 100;
-				}
-				if (c.equals(clPGreen)) {
-					greenMap[c.y][c.x] = 100;
-				}
-				batch.setColor(1.0f - greenMap[c.y][c.x], 1.0f - redMap[c.y][c.x] / 100f, 1.0f - Math.max(redMap[c.y][c.x], greenMap[c.y][c.x]) / 100f, 1);
-				batch.draw(texture, l.x - xScroll, l.y - yScroll);
 			}
 		}
-		/*Pt touchedPt = hcs.find(new Pt(ty, tx));
-		for (int y = 0; y < 400; y += 10) { for (int x = 0; x < 400; x += 10) {
-			Pt loc = hcs.find(new Pt(y, x));
-			if (touched && loc.equals(touchedPt)) {
-				batch.setColor(1, 1, 1, 1);
-			} else {
-				batch.setColor((loc.y % 3) * 0.3f, (loc.x % 3) * 0.3f, 0.2f, 1.0f);
-			}
-			batch.draw(texture, x, y);
-		}}*/
 		batch.end();
 	}
 	
@@ -89,9 +113,23 @@ public class HelloWorld implements ApplicationListener
 	
 	@Override
 	public void create() {
-		if (texture == null) {
-			texture = new Texture(Gdx.files.internal("hex.png"));
+		if (hexT == null) {
+			hexT = new Texture(Gdx.files.internal("space.png"));
+			shipT = new Texture(Gdx.files.internal("corvette.png"));
+			for (int y = 0; y < 12; y++) {
+				for (int x = 0; x < 8; x++) {
+					map[y][x] = new Tile();
+				}
+			}
+			
+			map[5][5].ship = new Ship();
+			map[2][4].ship = new Ship();
+			input = new MyInput();
+			Gdx.input.setInputProcessor(new GestureDetector(input));
+			thruster = Gdx.audio.newSound(Gdx.files.internal("thruster.ogg"));
 		}
+		
+		//camera = new OrthographicCamera(2f, 2f);
 		batch = new SpriteBatch();
 	}
 }

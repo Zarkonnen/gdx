@@ -27,6 +27,55 @@ public class HexCoordinateSystem implements CoordinateSystem<Pt> {
 			}
 		}
 	}
+	
+	@Override
+	public int direction(Pt c0, Pt c1) {
+		for (int d = 0; d < numberOfDirections(); d++) {
+			if (inDirection(c0, d).equals(c1)) {
+				return d;
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public Pt inDirection(Pt c, int direction) {
+		if (even(c.x)) {
+			switch (direction) {
+				case 0:
+					return new Pt(c.y - 1, c.x);
+				case 1:
+					return new Pt(c.y - 1, c.x + 1);
+				case 2:
+					return new Pt(c.y, c.x + 1);
+				case 3:
+					return new Pt(c.y + 1, c.x);
+				case 4:
+					return new Pt(c.y, c.x - 1);
+				case 5:
+					return new Pt(c.y - 1, c.x - 1);
+			}
+		} else {
+			switch (direction) {
+				case 0:
+					return new Pt(c.y - 1, c.x);
+				case 1:
+					return new Pt(c.y, c.x + 1);
+				case 2:
+					return new Pt(c.y + 1, c.x + 1);
+				case 3:
+					return new Pt(c.y + 1, c.x);
+				case 4:
+					return new Pt(c.y + 1, c.x - 1);
+				case 5:
+					return new Pt(c.y, c.x -1);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public int numberOfDirections() { return 6; }
 
 	@Override
 	public Pt find(Pt p) {
