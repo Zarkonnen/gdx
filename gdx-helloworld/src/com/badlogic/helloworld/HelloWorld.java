@@ -2,6 +2,8 @@ package com.badlogic.helloworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.helloworld.display.Display;
+import com.badlogic.helloworld.model.GameWorld;
 
 public class HelloWorld implements ApplicationListener {
 	private GameWorld w;

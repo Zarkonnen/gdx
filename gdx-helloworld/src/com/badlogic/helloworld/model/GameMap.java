@@ -1,4 +1,4 @@
-package com.badlogic.helloworld;
+package com.badlogic.helloworld.model;
 
 import java.util.Iterator;
 

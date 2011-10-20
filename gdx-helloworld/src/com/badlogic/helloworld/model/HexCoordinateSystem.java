@@ -1,4 +1,6 @@
-package com.badlogic.helloworld;
+package com.badlogic.helloworld.model;
+
+import com.badlogic.helloworld.CoordinateSystem;
 
 public class HexCoordinateSystem implements CoordinateSystem<Pt> {
 	private final int w;

@@ -1,6 +1,7 @@
 package com.badlogic.helloworld;
 
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.helloworld.model.Pt;
 
 public class MyInput implements GestureDetector.GestureListener {
 	public Pt clickP;

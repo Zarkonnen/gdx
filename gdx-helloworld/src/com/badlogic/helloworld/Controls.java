@@ -2,6 +2,10 @@ package com.badlogic.helloworld;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.helloworld.display.Display;
+import com.badlogic.helloworld.model.GameWorld;
+import com.badlogic.helloworld.model.Pt;
+import com.badlogic.helloworld.model.Tile;
 
 public class Controls {
 	private MyInput input;
@@ -19,7 +23,10 @@ public class Controls {
 	}
 	
 	public void run() {
-		int h = Gdx.graphics.getHeight();
+		d.scrollables.x += input.pan.x;
+		d.scrollables.y -= input.pan.y;
+		input.pan = Pt.ORIGIN;
+		/*int h = Gdx.graphics.getHeight();
 		Pt touchL = input.clickP;
 		input.clickP = null;
 		touchL = touchL == null ? null : new Pt(h - touchL.y + d.yScroll, touchL.x + d.xScroll);
@@ -42,6 +49,6 @@ public class Controls {
 					w.selection = clP;
 				}
 			}
-		}
+		}*/
 	}
 }

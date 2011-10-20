@@ -1,5 +1,7 @@
 package com.badlogic.helloworld;
 
+import com.badlogic.helloworld.model.Pt;
+
 public interface CoordinateSystem<T> {
 	public int numberOfDirections();
 	public boolean adjacent(T c0, T c1);
