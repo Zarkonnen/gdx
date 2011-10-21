@@ -4,7 +4,6 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.helloworld.model.Pt;
 
 public class MyInput implements GestureDetector.GestureListener {
-	public Pt clickP;
 	public Pt pan = new Pt(0, 0);
 
 	@Override
@@ -24,10 +23,7 @@ public class MyInput implements GestureDetector.GestureListener {
 	}
 
 	@Override
-	public boolean tap(int x, int y, int count) {
-		clickP = new Pt(y, x);
-		return true;
-	}
+	public boolean tap(int x, int y, int count) { return false; }
 
 	@Override
 	public boolean touchDown(int x, int y, int ptr) {

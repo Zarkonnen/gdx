@@ -12,14 +12,14 @@ public class Controls {
 	private GameWorld w;
 	private Display d;
 	
-    private Sound thruster;
+    //private Sound thruster;
 
 	
 	public Controls(MyInput input, GameWorld w, Display d) {
 		this.input = input;
 		this.w = w;
 		this.d = d;
-		thruster = Gdx.audio.newSound(Gdx.files.internal("thruster.ogg"));
+		//thruster = Gdx.audio.newSound(Gdx.files.internal("thruster.ogg"));
 	}
 	
 	public void run() {

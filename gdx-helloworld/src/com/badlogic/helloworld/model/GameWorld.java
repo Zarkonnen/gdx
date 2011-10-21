@@ -1,17 +1,32 @@
 package com.badlogic.helloworld.model;
 
 import com.badlogic.helloworld.CoordinateSystem;
+import com.badlogic.helloworld.ServerLink;
 
 public class GameWorld {
+	public final int csW = 64;
+	public final int csH = 47;
+	
 	public GameMap<Tile> map = new GameMap<Tile>(20, 20);
-	public CoordinateSystem<Pt> cs = new HexCoordinateSystem(47, 64, 12);
-	public Pt selection = null;
-	public Pt target = null;
+	public CoordinateSystem<Pt> cs = new HexCoordinateSystem(csH, csW, 12);
+	public Ship selection = null;
+	public Ship target = null;
+	public ServerLink server;
+	
+	public Pt find(Ship s) {
+		for (Pt p : map.pts()) {
+			if (map.get(p).ship == s) {
+				return p;
+			}
+		}
+		return null;
+	}
 	
 	public GameWorld() {
 		for (int y = 0; y < 20; y++) {
 			for (int x = 0; x < 20; x++) {
-				map.set(new Pt(y, x), new Tile());
+				Pt c = new Pt(y, x);
+				map.set(c, new Tile(c));
 			}
 		}
 		

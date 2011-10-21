@@ -2,17 +2,23 @@ package com.badlogic.helloworld.display;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.helloworld.commands.MoveCommand;
+import com.badlogic.helloworld.model.GameWorld;
+import com.badlogic.helloworld.model.Pt;
 import com.badlogic.helloworld.model.Tile;
 
 public class TileActor extends Actor {
 	final Display d;
+	final GameWorld w;
 	final Tile t;
 	
-	public TileActor(Tile t, Display d, int x, int y) {
+	public TileActor(Tile t, Display d, GameWorld w, int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.t = t;
 		this.d = d;
+		this.w = w;
+		this.touchable = true;
 	}
 	
 	@Override
@@ -21,11 +27,25 @@ public class TileActor extends Actor {
 	}
 
 	@Override
-	public Actor hit(float arg0, float arg1) { return null; }
+	public Actor hit(float x, float y) {
+		if (x < 0 || y < 0 || x > w.csW || y > w.csH) { return null; }
+		return w.cs.find(new Pt((int) y, (int) x)).equals(Pt.ORIGIN) ? this : null;
+	}
+	
 	@Override
-	public boolean touchDown(float arg0, float arg1, int arg2) { return false; }
+	public boolean touchDown(float x, float y, int ptr) { return true; }
+	
 	@Override
-	public void touchDragged(float arg0, float arg1, int arg2) { }
+	public void touchDragged(float x, float y, int ptr) {}
+	
 	@Override
-	public void touchUp(float arg0, float arg1, int arg2) { }
+	public void touchUp(float x, float y, int ptr) {
+		if (w.selection != null) {
+			Pt shipC = w.find(w.selection);
+			int dir = w.cs.direction(shipC, t.c);
+			if (dir != -1) {
+				w.server.submitCommand(new MoveCommand(w.selection, t.c));
+			}
+		}
+	}
 }
