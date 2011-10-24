@@ -11,10 +11,10 @@ public class LineOutput implements Output {
 	public LineOutput(Writer w) { this.w = new PrintWriter(w); }
 
 	@Override
-	public void write(String className, String id, HashMap<Stat<?>, Object> mapping) {
+	public void write(String className, ID id, HashMap<Stat<?>, Object> mapping) {
 		w.print(escape(className, false));
 		w.print(" ");
-		w.print(escape(id, false));
+		w.print(escape(id.id, false));
 		w.println(" {");
 		for (Map.Entry<Stat<?>, Object> kv : mapping.entrySet()) {
 			w.print(escape(kv.getKey().name, false));
@@ -27,6 +27,9 @@ public class LineOutput implements Output {
 	static String encode(Object o) {
 		if (o instanceof String) {
 			return escape((String) o, true);
+		}
+		if (o instanceof ID) {
+			return ">" + escape(((ID) o).id, false);
 		}
 		if (o instanceof Integer) {
 			return o + "";

@@ -10,17 +10,17 @@ import java.util.Map;
 
 public class IO {
 	public void write(Output o, HashMap<String, StatObject> heads) {
-		IdentityHashMap<Object, String> objectToID = new IdentityHashMap<Object, String>();
+		IdentityHashMap<Object, ID> objectToID = new IdentityHashMap<Object, ID>();
 		for (Map.Entry<String, StatObject> kv : heads.entrySet()) {
-			objectToID.put(kv.getValue(), kv.getKey());
+			objectToID.put(kv.getValue(), new ID(kv.getKey()));
 		}
 		int idCounter = 0;
 		for (Map.Entry<String, StatObject> kv : heads.entrySet()) {
-			idCounter = write(o, kv.getKey(), kv.getValue(), objectToID, idCounter);
+			idCounter = write(o, new ID(kv.getKey()), kv.getValue(), objectToID, idCounter);
 		}
 	}
 
-	private int write(Output o, String id, StatObject so, IdentityHashMap<Object, String> objectToID, int idCounter) {
+	private int write(Output o, ID id, StatObject so, IdentityHashMap<Object, ID> objectToID, int idCounter) {
 		HashMap<Stat<?>, Object> mapping = new HashMap<Stat<?>, Object>();
 		for (Map.Entry<Stat<?>, Object> kv : so.stats.entrySet()) {
 			if (objectToID.containsKey(kv.getValue())) {
@@ -28,14 +28,15 @@ public class IO {
 			} else {
 				if (isComplexObject(kv.getValue())) {
 					StatObject mySO = toStatObject(kv.getValue());
-					String myID = mySO.get(Stat.NAME);
-					if (myID == null) {
-						myID = kv.getValue().getClass().getSimpleName() + idCounter++;
+					String myIDStr = mySO.get(Stat.NAME);
+					if (myIDStr == null) {
+						myIDStr = kv.getValue().getClass().getSimpleName() + idCounter++;
 					} else {
-						if (objectToID.containsValue(myID)) {
-							myID = myID + idCounter++;
+						if (objectToID.containsValue(new ID(myIDStr))) {
+							myIDStr = myIDStr + idCounter++;
 						}
 					}
+					ID myID = new ID(myIDStr);
 					objectToID.put(kv.getValue(), myID);
 					idCounter = write(o, myID, mySO, objectToID, idCounter);
 					mapping.put(kv.getKey(), myID);
