@@ -1,8 +1,11 @@
 package com.zarkonnen.atactics.model.stats;
 
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IO {
@@ -18,7 +21,7 @@ public class IO {
 	}
 
 	private int write(Output o, String id, StatObject so, IdentityHashMap<Object, String> objectToID, int idCounter) {
-		HashMap<Stat<?>, String> mapping = new HashMap<Stat<?>, String>();
+		HashMap<Stat<?>, Object> mapping = new HashMap<Stat<?>, Object>();
 		for (Map.Entry<Stat<?>, Object> kv : so.stats.entrySet()) {
 			if (objectToID.containsKey(kv.getValue())) {
 				mapping.put(kv.getKey(), objectToID.get(kv.getValue()));
@@ -37,7 +40,7 @@ public class IO {
 					idCounter = write(o, myID, mySO, objectToID, idCounter);
 					mapping.put(kv.getKey(), myID);
 				} else {
-					mapping.put(kv.getKey(), toString(kv.getValue()));
+					mapping.put(kv.getKey(), kv.getValue());
 				}
 			}
 		}
@@ -54,20 +57,39 @@ public class IO {
 		return true;
 	}
 	
-	static String toString(Object o) {
-		return "" + o;
-	}
-	
+	@SuppressWarnings("unchecked")
 	static StatObject toStatObject(Object o) {
 		if (o instanceof StatObject) {
 			return (StatObject) o;
 		}
-		
+		if (o instanceof List<?>) {
+			return new AList<Object>((List<Object>) o);
+		}
 		throw new RuntimeException("Don't know how to serialize a " + o.getClass().getName() + ".");
 	}
 
 	public HashMap<String, StatObject> read(Reader r) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private static class AList<T> extends StatObject {
+		public AList() {}
+		
+		public AList(List<T> l) {
+			stats.put(new Stat<Integer>("size", Integer.class), l.size());
+			for (int i = 0; i < l.size(); i++) {
+				stats.put(new Stat<Object>("" + i, Object.class), l.get(i));
+			}
+		}
+		
+		public List<Object> getList() {
+			ArrayList<Object> l = new ArrayList<Object>();
+			int size = get(new Stat<Integer>("size", Integer.class));
+			for (int i = 0; i < size; i++) {
+				l.add(get(new Stat<Object>("" + i, Object.class)));
+			}
+			return Collections.unmodifiableList(l);
+		}
 	}
 }

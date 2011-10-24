@@ -32,6 +32,6 @@ public class MoveCommand implements Command {
 		Tile dstT = w.map.get(targetC);
 		dstT.ship = srcT.ship;
 		srcT.ship = null;
-		dstT.ship.change(Stats.DIRECTION, dir);
+		dstT.ship.set(Stats.DIRECTION, dir);
 	}
 }

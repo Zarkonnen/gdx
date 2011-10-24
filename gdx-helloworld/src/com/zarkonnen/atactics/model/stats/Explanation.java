@@ -13,4 +13,8 @@ public class Explanation<T> {
 		this.explanation = explanation;
 		this.change = change;
 	}
+	
+	public String toString() {
+		return original + explanation;
+	}
 }
