@@ -1,4 +1,4 @@
-package com.badlogic.helloworld.model;
+package com.zarkonnen.atactics.model;
 
 public class Tile {
 	public final Pt c;

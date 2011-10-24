@@ -1,4 +1,4 @@
-package com.badlogic.helloworld.model;
+package com.zarkonnen.atactics.model;
 
 public final class Pt {
 	public static final Pt ORIGIN = new Pt(0, 0);

@@ -1,6 +1,6 @@
-package com.badlogic.helloworld;
+package com.zarkonnen.atactics;
 
-import com.badlogic.helloworld.model.Pt;
+import com.zarkonnen.atactics.model.Pt;
 
 public interface CoordinateSystem<T> {
 	public int numberOfDirections();

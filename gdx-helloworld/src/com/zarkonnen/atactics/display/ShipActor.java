@@ -1,10 +1,10 @@
-package com.badlogic.helloworld.display;
+package com.zarkonnen.atactics.display;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.helloworld.model.GameWorld;
-import com.badlogic.helloworld.model.Pt;
-import com.badlogic.helloworld.model.Ship;
+import com.zarkonnen.atactics.model.GameWorld;
+import com.zarkonnen.atactics.model.Pt;
+import com.zarkonnen.atactics.model.Ship;
 
 public class ShipActor extends Actor {
 	int[] diry = { 0,   0,   0,  0, 64,  64 };

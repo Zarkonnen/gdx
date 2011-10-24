@@ -1,13 +1,14 @@
-package com.badlogic.helloworld.commands;
+package com.zarkonnen.atactics.commands;
 
 import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
-import com.badlogic.helloworld.display.Display;
-import com.badlogic.helloworld.display.ShipActor;
-import com.badlogic.helloworld.model.GameWorld;
-import com.badlogic.helloworld.model.Pt;
-import com.badlogic.helloworld.model.Ship;
-import com.badlogic.helloworld.model.Tile;
+import com.zarkonnen.atactics.display.Display;
+import com.zarkonnen.atactics.display.ShipActor;
+import com.zarkonnen.atactics.model.GameWorld;
+import com.zarkonnen.atactics.model.Pt;
+import com.zarkonnen.atactics.model.Ship;
+import com.zarkonnen.atactics.model.Stats;
+import com.zarkonnen.atactics.model.Tile;
 
 public class MoveCommand implements Command {
 	Ship ship;
@@ -31,5 +32,6 @@ public class MoveCommand implements Command {
 		Tile dstT = w.map.get(targetC);
 		dstT.ship = srcT.ship;
 		srcT.ship = null;
+		dstT.ship.change(Stats.DIRECTION, dir);
 	}
 }

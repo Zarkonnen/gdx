@@ -1,16 +1,16 @@
-package com.badlogic.helloworld;
+package com.zarkonnen.atactics;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.helloworld.display.Display;
-import com.badlogic.helloworld.model.GameWorld;
+import com.zarkonnen.atactics.display.Display;
+import com.zarkonnen.atactics.model.GameWorld;
 
 public class HelloWorld implements ApplicationListener {
 	private GameWorld w;
 	private Display d;
 	private MyInput input;
-	private Controls c;
+	private ScrollControls c;
 	private InputMultiplexer im = new InputMultiplexer();
 
 	
@@ -49,7 +49,7 @@ public class HelloWorld implements ApplicationListener {
 		im.addProcessor(new GestureDetector(input));
 		w = new GameWorld();
 		d = new Display(w);
-		c = new Controls(input, w, d);
+		c = new ScrollControls(input, d);
 		ServerLink sl = new ServerLink();
 		sl.d = d;
 		sl.w = w;

@@ -1,6 +1,6 @@
-package com.badlogic.helloworld.model;
+package com.zarkonnen.atactics.model;
 
-import com.badlogic.helloworld.CoordinateSystem;
+import com.zarkonnen.atactics.CoordinateSystem;
 
 public class HexCoordinateSystem implements CoordinateSystem<Pt> {
 	private final int w;

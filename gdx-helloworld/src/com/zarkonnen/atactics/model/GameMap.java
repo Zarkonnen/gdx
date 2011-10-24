@@ -1,4 +1,4 @@
-package com.badlogic.helloworld.model;
+package com.zarkonnen.atactics.model;
 
 import java.util.Iterator;
 

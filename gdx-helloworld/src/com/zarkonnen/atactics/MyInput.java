@@ -1,7 +1,7 @@
-package com.badlogic.helloworld;
+package com.zarkonnen.atactics;
 
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.helloworld.model.Pt;
+import com.zarkonnen.atactics.model.Pt;
 
 public class MyInput implements GestureDetector.GestureListener {
 	public Pt pan = new Pt(0, 0);

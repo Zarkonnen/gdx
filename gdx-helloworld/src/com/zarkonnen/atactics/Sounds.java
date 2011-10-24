@@ -1,4 +1,4 @@
-package com.badlogic.helloworld;
+package com.zarkonnen.atactics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

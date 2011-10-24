@@ -1,8 +1,8 @@
-package com.badlogic.helloworld.commands;
+package com.zarkonnen.atactics.commands;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.helloworld.display.ShipActor;
+import com.zarkonnen.atactics.display.ShipActor;
 
 public class ChangeDirectionAction extends Action {
 	int direction;

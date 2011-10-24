@@ -1,7 +1,7 @@
-package com.badlogic.helloworld.model;
+package com.zarkonnen.atactics.model;
 
-import com.badlogic.helloworld.CoordinateSystem;
-import com.badlogic.helloworld.ServerLink;
+import com.zarkonnen.atactics.CoordinateSystem;
+import com.zarkonnen.atactics.ServerLink;
 
 public class GameWorld {
 	public final int csW = 64;
