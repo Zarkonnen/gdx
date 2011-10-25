@@ -6,6 +6,8 @@ import static com.zarkonnen.atactics.model.Stats.*;
 import static com.zarkonnen.atactics.model.stats.GetStrategy.*;
 
 public class ShipEffect extends StatObject {
+	public ShipEffect() { super(true); }
+	
 	public ShipEffect(String name) {
 		super(true);
 		set(Stat.NAME, name);

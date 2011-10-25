@@ -1,6 +1,6 @@
 package com.zarkonnen.atactics.model.stats;
 
-import java.io.Reader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,13 +28,12 @@ public class IO {
 			} else {
 				if (isComplexObject(kv.getValue())) {
 					StatObject mySO = toStatObject(kv.getValue());
-					String myIDStr = mySO.get(Stat.NAME);
+					String myIDStr = smushName(mySO.get(Stat.NAME));
 					if (myIDStr == null) {
-						myIDStr = kv.getValue().getClass().getSimpleName() + idCounter++;
-					} else {
-						if (objectToID.containsValue(new ID(myIDStr))) {
-							myIDStr = myIDStr + idCounter++;
-						}
+						myIDStr = smushName(kv.getValue().getClass().getSimpleName());
+					}
+					if (objectToID.containsValue(new ID(myIDStr))) {
+						myIDStr = myIDStr + idCounter++;
 					}
 					ID myID = new ID(myIDStr);
 					objectToID.put(kv.getValue(), myID);
@@ -45,8 +44,14 @@ public class IO {
 				}
 			}
 		}
-		o.write(so.getClass().getName(), id, mapping);
+		o.write(new IOObject(so.getClass().getName(), id, mapping));
 		return idCounter;
+	}
+	
+	static String smushName(String name) {
+		if (name == null) { return null; }
+		name = name.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+		return name.length() > 0 ? name : null;
 	}
 	
 	static boolean isComplexObject(Object o) {
@@ -64,33 +69,83 @@ public class IO {
 			return (StatObject) o;
 		}
 		if (o instanceof List<?>) {
-			return new AList<Object>((List<Object>) o);
+			return new AList((List<Object>) o);
 		}
 		throw new RuntimeException("Don't know how to serialize a " + o.getClass().getName() + ".");
 	}
 
-	public HashMap<String, StatObject> read(Reader r) {
-		// TODO Auto-generated method stub
-		return null;
+	@SuppressWarnings("unchecked")
+	public HashMap<String, StatObject> read(Input in) throws IOException {
+		HashMap<String, Object> idToObj = new HashMap<String, Object>();
+		HashMap<IOObject, StatObject> iooToSO = new HashMap<IOObject, StatObject>();
+		IOObject ioo = null;
+		while ((ioo = in.read()) != null) {
+			try {
+				StatObject obj = (StatObject) Class.forName(ioo.className).newInstance();
+				iooToSO.put(ioo, obj);
+				idToObj.put(ioo.id.id, obj instanceof HelperObject ? ((HelperObject) obj).createRealObject() : obj);
+			} catch (ClassNotFoundException cnfe) {
+				throw new IOException(cnfe);
+			} catch (IllegalAccessException iae) {
+				throw new IOException(iae);
+			} catch (InstantiationException ie) {
+				throw new IOException(ie);
+			}
+		}
+		for (Map.Entry<IOObject, StatObject> iooAndSO : iooToSO.entrySet()) {
+			ioo = iooAndSO.getKey();
+			StatObject so = iooAndSO.getValue();
+			for (Map.Entry<Stat<?>, Object> oKV : ioo.mapping.entrySet()) {
+				if (oKV.getValue() instanceof ID) {
+					Object realObject = idToObj.get(((ID) oKV.getValue()).id);
+					so.stats.put(new Stat(oKV.getKey().name, realObject.getClass()), realObject);
+				} else {
+					so.stats.put(oKV.getKey(), oKV.getValue());
+				}
+			}
+		}
+		for (Map.Entry<IOObject, StatObject> iooAndSO : iooToSO.entrySet()) {
+			ioo = iooAndSO.getKey();
+			StatObject so = iooAndSO.getValue();
+			if (so instanceof HelperObject) {
+				((HelperObject) so).completeRealObject(idToObj.get(ioo.id.id));
+			}
+		}
+		HashMap<String, StatObject> idToStatObj = new HashMap<String, StatObject>();
+		for (Map.Entry<String, Object> e : idToObj.entrySet()) {
+			if (e.getValue() instanceof StatObject) {
+				idToStatObj.put(e.getKey(), (StatObject) e.getValue());
+			}
+		}
+		return idToStatObj;
 	}
 	
-	private static class AList<T> extends StatObject {
+	@SuppressWarnings("unchecked")
+	private static class AList extends HelperObject<List> {
+		@SuppressWarnings("unused") // Reflective instantiation.
 		public AList() {}
 		
-		public AList(List<T> l) {
+		public AList(List<?> l) {
 			stats.put(new Stat<Integer>("size", Integer.class), l.size());
 			for (int i = 0; i < l.size(); i++) {
 				stats.put(new Stat<Object>("" + i, Object.class), l.get(i));
 			}
 		}
 		
-		public List<Object> getList() {
-			ArrayList<Object> l = new ArrayList<Object>();
-			int size = get(new Stat<Integer>("size", Integer.class));
+		private ArrayList createdList;
+
+		@Override
+		public void completeRealObject(List obj) {
+			int size = (Integer) stats.get(new Stat<Integer>("size", Integer.class));
 			for (int i = 0; i < size; i++) {
-				l.add(get(new Stat<Object>("" + i, Object.class)));
+				createdList.add(stats.get(new Stat<Object>("" + i, Object.class)));
 			}
-			return Collections.unmodifiableList(l);
+		}
+
+		@Override
+		public List createRealObject() {
+			createdList = new ArrayList();
+			return Collections.unmodifiableList(createdList);
 		}
 	}
 }

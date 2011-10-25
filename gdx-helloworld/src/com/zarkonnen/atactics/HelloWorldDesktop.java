@@ -1,4 +1,6 @@
 package com.zarkonnen.atactics;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 
@@ -8,12 +10,13 @@ import com.zarkonnen.atactics.model.ShipEffect;
 import com.zarkonnen.atactics.model.ShipType;
 import com.zarkonnen.atactics.model.Stats;
 import com.zarkonnen.atactics.model.stats.IO;
+import com.zarkonnen.atactics.model.stats.LineInput;
 import com.zarkonnen.atactics.model.stats.LineOutput;
 import com.zarkonnen.atactics.model.stats.StatObject;
 import static com.zarkonnen.atactics.collections.Utils.*;
 
 public class HelloWorldDesktop {
-	public static void main(String[] argv) {
+	public static void main(String[] argv) throws IOException {
 		// qqDPS
 		ShipType frigate = new ShipType();
 		frigate.set(Stats.MAX_HP, 10);
@@ -33,6 +36,11 @@ public class HelloWorldDesktop {
 		HashMap<String, StatObject> heads = new HashMap<String, StatObject>();
 		heads.put("s1", s1);
 		heads.put("s2", s2);
+		new IO().write(new LineOutput(sw), heads);
+		System.out.println(sw.getBuffer().toString());
+		System.out.println("____________________________");
+		heads = new IO().read(new LineInput(new StringReader(sw.getBuffer().toString())));
+		sw = new StringWriter();
 		new IO().write(new LineOutput(sw), heads);
 		System.out.println(sw.getBuffer().toString());
 		

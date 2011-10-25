@@ -2,7 +2,6 @@ package com.zarkonnen.atactics.model.stats;
 
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LineOutput implements Output {
@@ -11,14 +10,15 @@ public class LineOutput implements Output {
 	public LineOutput(Writer w) { this.w = new PrintWriter(w); }
 
 	@Override
-	public void write(String className, ID id, HashMap<Stat<?>, Object> mapping) {
-		w.print(escape(className, false));
+	public void write(IOObject ioo) {
+		w.print(escape(ioo.className, false));
 		w.print(" ");
-		w.print(escape(id.id, false));
+		w.print(escape(ioo.id.id, false));
 		w.println(" {");
-		for (Map.Entry<Stat<?>, Object> kv : mapping.entrySet()) {
+		for (Map.Entry<Stat<?>, Object> kv : ioo.mapping.entrySet()) {
+			w.print("  ");
 			w.print(escape(kv.getKey().name, false));
-			w.print("=");
+			w.print(" = ");
 			w.println(encode(kv.getValue()));
 		}
 		w.println("}");
