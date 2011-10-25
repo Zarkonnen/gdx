@@ -98,7 +98,7 @@ public class IO {
 			for (Map.Entry<Stat<?>, Object> oKV : ioo.mapping.entrySet()) {
 				if (oKV.getValue() instanceof ID) {
 					Object realObject = idToObj.get(((ID) oKV.getValue()).id);
-					so.stats.put(new Stat(oKV.getKey().name, realObject.getClass()), realObject);
+					so.stats.put(new Stat(oKV.getKey().name), realObject);
 				} else {
 					so.stats.put(oKV.getKey(), oKV.getValue());
 				}
@@ -126,9 +126,9 @@ public class IO {
 		public AList() {}
 		
 		public AList(List<?> l) {
-			stats.put(new Stat<Integer>("size", Integer.class), l.size());
+			stats.put(new Stat<Integer>("size"), l.size());
 			for (int i = 0; i < l.size(); i++) {
-				stats.put(new Stat<Object>("" + i, Object.class), l.get(i));
+				stats.put(new Stat<Object>("" + i), l.get(i));
 			}
 		}
 		
@@ -136,9 +136,9 @@ public class IO {
 
 		@Override
 		public void completeRealObject(List obj) {
-			int size = (Integer) stats.get(new Stat<Integer>("size", Integer.class));
+			int size = (Integer) stats.get(new Stat<Integer>("size"));
 			for (int i = 0; i < size; i++) {
-				createdList.add(stats.get(new Stat<Object>("" + i, Object.class)));
+				createdList.add(stats.get(new Stat<Object>("" + i)));
 			}
 		}
 

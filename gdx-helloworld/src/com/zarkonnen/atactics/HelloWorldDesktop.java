@@ -43,6 +43,11 @@ public class HelloWorldDesktop {
 		sw = new StringWriter();
 		new IO().write(new LineOutput(sw), heads);
 		System.out.println(sw.getBuffer().toString());
+		System.out.println("____________________________");
+		heads = new IO().read(new LineInput(new StringReader(sw.getBuffer().toString())));
+		sw = new StringWriter();
+		new IO().write(new LineOutput(sw), heads);
+		System.out.println(sw.getBuffer().toString());
 		
 		new JoglApplication(new HelloWorld(), "Hello World", 320, 480, false);
 	}

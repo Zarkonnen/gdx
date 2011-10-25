@@ -40,7 +40,7 @@ public class LineInput implements Input {
 				throw new IOException("Bad line: " + line);
 			}
 			Object value = interpretValue(tokens.get(2));
-			mapping.put(new Stat(tokens.get(0), value.getClass()), value);
+			mapping.put(new Stat(tokens.get(0)), value);
 		}
 		return new IOObject(className, id, mapping);
 	}
