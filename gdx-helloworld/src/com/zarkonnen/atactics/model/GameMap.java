@@ -2,7 +2,10 @@ package com.zarkonnen.atactics.model;
 
 import java.util.Iterator;
 
-public class GameMap<T> {
+import com.zarkonnen.atactics.model.stats.HasHelper;
+import com.zarkonnen.atactics.model.stats.HelperObject;
+
+public class GameMap<T> implements HasHelper<GameMap<T>> {
 	private T[][] tiles;
 	
 	@SuppressWarnings("unchecked")
@@ -53,6 +56,33 @@ public class GameMap<T> {
 				};
 			}
 		};
+	}
+
+	@Override
+	public HelperObject<GameMap<T>> getHelper() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public static class H<T> extends HelperObject<GameMap<T>> {
+		public H() {}
+		private H(GameMap<T> gm) {
+			
+		}
+		
+		private GameMap<T> created;
+		
+		@Override
+		public void completeRealObject(GameMap<T> obj) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public GameMap<T> createRealObject() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 }
