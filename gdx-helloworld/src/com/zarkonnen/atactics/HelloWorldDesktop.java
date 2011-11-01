@@ -18,7 +18,7 @@ import static com.zarkonnen.atactics.collections.Utils.*;
 public class HelloWorldDesktop {
 	public static void main(String[] argv) throws IOException {
 		// qqDPS
-		ShipType frigate = new ShipType();
+		/*ShipType frigate = new ShipType();
 		frigate.set(Stats.MAX_HP, 10);
 		frigate.set(Stats.SPEED, 2);
 		frigate.set(Stats.DAMAGE, 1);
@@ -48,7 +48,7 @@ public class HelloWorldDesktop {
 		sw = new StringWriter();
 		new IO().write(new LineOutput(sw), heads);
 		System.out.println(sw.getBuffer().toString());
-		
+		*/
 		new JoglApplication(new HelloWorld(), "Hello World", 320, 480, false);
 	}
 }

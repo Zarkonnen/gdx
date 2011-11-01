@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +12,18 @@ import java.util.Map;
 public class IO {
 	public void write(Output o, HashMap<String, StatObject> heads) {
 		IdentityHashMap<Object, ID> objectToID = new IdentityHashMap<Object, ID>();
+		HashSet<String> usedIDs = new HashSet<String>();
 		for (Map.Entry<String, StatObject> kv : heads.entrySet()) {
 			objectToID.put(kv.getValue(), new ID(kv.getKey()));
 		}
+		usedIDs.addAll(heads.keySet());
 		int idCounter = 0;
 		for (Map.Entry<String, StatObject> kv : heads.entrySet()) {
-			idCounter = write(o, new ID(kv.getKey()), kv.getValue(), objectToID, idCounter);
+			idCounter = write(o, new ID(kv.getKey()), kv.getValue(), objectToID, idCounter, usedIDs);
 		}
 	}
 
-	private int write(Output o, ID id, StatObject so, IdentityHashMap<Object, ID> objectToID, int idCounter) {
+	private int write(Output o, ID id, StatObject so, IdentityHashMap<Object, ID> objectToID, int idCounter, HashSet<String> usedIDs) {
 		HashMap<Stat<?>, Object> mapping = new HashMap<Stat<?>, Object>();
 		for (Map.Entry<Stat<?>, Object> kv : so.stats.entrySet()) {
 			if (objectToID.containsKey(kv.getValue())) {
@@ -32,12 +35,13 @@ public class IO {
 					if (myIDStr == null) {
 						myIDStr = smushName(kv.getValue().getClass().getSimpleName());
 					}
-					if (objectToID.containsValue(new ID(myIDStr))) {
+					if (usedIDs.contains(myIDStr)) {
 						myIDStr = myIDStr + idCounter++;
 					}
 					ID myID = new ID(myIDStr);
+					usedIDs.add(myIDStr);
 					objectToID.put(kv.getValue(), myID);
-					idCounter = write(o, myID, mySO, objectToID, idCounter);
+					idCounter = write(o, myID, mySO, objectToID, idCounter, usedIDs);
 					mapping.put(kv.getKey(), myID);
 				} else {
 					mapping.put(kv.getKey(), kv.getValue());
@@ -60,6 +64,7 @@ public class IO {
 		if (o instanceof Boolean) { return false; }
 		if (o instanceof Double)  { return false; }
 		if (o instanceof Float)   { return false; }
+		if (o instanceof HasStringRepresentation) { return false; }
 		return true;
 	}
 	
@@ -67,6 +72,9 @@ public class IO {
 	static StatObject toStatObject(Object o) {
 		if (o instanceof StatObject) {
 			return (StatObject) o;
+		}
+		if (o instanceof HasHelper) {
+			return ((HasHelper) o).getHelper();
 		}
 		if (o instanceof List<?>) {
 			return new AList((List<Object>) o);

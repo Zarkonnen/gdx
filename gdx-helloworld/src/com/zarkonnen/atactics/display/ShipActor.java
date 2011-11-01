@@ -2,6 +2,7 @@ package com.zarkonnen.atactics.display;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.zarkonnen.atactics.model.Fight;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
 import com.zarkonnen.atactics.model.Ship;
@@ -27,7 +28,7 @@ public class ShipActor extends Actor {
 	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
-		if (w.selection == ship) {
+		if (w.f.get(Fight.SELECTION) == ship) {
 			batch.setColor(0.8f, 1.0f, 0.8f, 1.0f);
 		}
 		batch.draw(d.shipT, x, y,
@@ -35,20 +36,20 @@ public class ShipActor extends Actor {
 				192 - diry[direction],
 				64,
 				64);
-		if (w.selection == ship) {
+		if (w.f.get(Fight.SELECTION) == ship) {
 			batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
 
 	@Override
 	public Actor hit(float x, float y) {
-		if (x < 0 || y < 0 || x > w.csW || y > w.csH) { return null; }
-		return w.cs.find(new Pt((int) y, (int) x)).equals(Pt.ORIGIN) ? this : null;
+		if (x < 0 || y < 0 || x > w.f.csW || y > w.f.csH) { return null; }
+		return w.f.cs.find(new Pt((int) y, (int) x)).equals(Pt.ORIGIN) ? this : null;
 	}
 	
 	@Override
-	public boolean touchDown(float x, float y, int ptr) { 
-		w.selection = ship;
+	public boolean touchDown(float x, float y, int ptr) {
+		w.f.set(Fight.SELECTION, ship);
 		return true;
 	}
 	@Override

@@ -4,13 +4,16 @@ import java.util.Iterator;
 
 import com.zarkonnen.atactics.model.stats.HasHelper;
 import com.zarkonnen.atactics.model.stats.HelperObject;
+import com.zarkonnen.atactics.model.stats.Stat;
 
-public class GameMap<T> implements HasHelper<GameMap<T>> {
+public class GameMap<T extends Tile> implements HasHelper<GameMap<T>> {
 	private T[][] tiles;
+	private Class<T> tileClass;
 	
 	@SuppressWarnings("unchecked")
-	public GameMap(int h, int w) {
-		tiles = (T[][]) new Object[h][w];
+	public GameMap(int h, int w, Class<T> tileClass) {
+		tiles = (T[][]) new Tile[h][w];
+		this.tileClass = tileClass;
 	}
 	
 	public T get(Pt c) {
@@ -60,28 +63,44 @@ public class GameMap<T> implements HasHelper<GameMap<T>> {
 
 	@Override
 	public HelperObject<GameMap<T>> getHelper() {
-		// TODO Auto-generated method stub
-		return null;
+		return new H<T>(this);
 	}
 	
-	public static class H<T> extends HelperObject<GameMap<T>> {
+	public static class H<T extends Tile> extends HelperObject<GameMap<T>> {
 		public H() {}
 		private H(GameMap<T> gm) {
-			
+			stats.put(new Stat<Integer>("h"), gm.tiles.length);
+			stats.put(new Stat<Integer>("w"), gm.tiles[0].length);
+			stats.put(new Stat<String>("tileClass"), gm.tileClass.getName());
+			for (int y = 0; y < gm.tiles.length; y++) { for (int x = 0; x < gm.tiles[y].length; x++) {
+				if (gm.tiles[y][x].getStats().size() > 1) {
+					stats.put(new Stat<T>(y + "/" + x), gm.tiles[y][x]);
+				}
+			}}
 		}
-		
-		private GameMap<T> created;
-		
+				
+		@SuppressWarnings("unchecked")
 		@Override
 		public void completeRealObject(GameMap<T> obj) {
-			// TODO Auto-generated method stub
-			
+			try {
+				final int h = (Integer) stats.get(new Stat<Integer>("h"));
+				final int w = (Integer) stats.get(new Stat<Integer>("w"));
+				obj.tiles = (T[][]) new Tile[h][w];
+				obj.tileClass = (Class<T>) Class.forName((String) stats.get(new Stat<String>("tileClass")));
+				for (int y = 0; y < h; y++) { for (int x = 0; x < w; x++) {
+					obj.tiles[y][x] = (T) stats.get(new Stat<T>(y + "/" + x));
+					if (obj.tiles[y][x] == null) {
+						obj.tiles[y][x] = obj.tileClass.getConstructor(Pt.class).newInstance(new Pt(y, x));
+					}
+				}}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		@Override
 		public GameMap<T> createRealObject() {
-			// TODO Auto-generated method stub
-			return null;
+			return new GameMap<T>(0, 0, null);
 		}
 		
 	}

@@ -3,10 +3,10 @@ package com.zarkonnen.atactics.model.stats;
 import java.util.HashMap;
 
 public class StatObject {
-	final HashMap<Stat<?>, Object> stats = new HashMap<Stat<?>, Object>();
-	final HashMap<Stat<?>, GetStrategy<?>> getStrategies = new HashMap<Stat<?>, GetStrategy<?>>();
-	final HashMap<Stat<?>, ChangeStrategy<?>> changeStrategies = new HashMap<Stat<?>, ChangeStrategy<?>>();
-	private final boolean sameStatsMeansEquals;
+	protected final HashMap<Stat<?>, Object> stats = new HashMap<Stat<?>, Object>();
+	protected final HashMap<Stat<?>, GetStrategy<?>> getStrategies = new HashMap<Stat<?>, GetStrategy<?>>();
+	protected final HashMap<Stat<?>, ChangeStrategy<?>> changeStrategies = new HashMap<Stat<?>, ChangeStrategy<?>>();
+	protected final boolean sameStatsMeansEquals;
 	
 	protected StatObject() { this(false); }
 	protected StatObject(boolean sameStatsMeansEquals) {

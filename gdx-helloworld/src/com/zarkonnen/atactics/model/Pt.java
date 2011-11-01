@@ -1,6 +1,8 @@
 package com.zarkonnen.atactics.model;
 
-public final class Pt {
+import com.zarkonnen.atactics.model.stats.HasStringRepresentation;
+
+public final class Pt implements HasStringRepresentation {
 	public static final Pt ORIGIN = new Pt(0, 0);
 	
 	public final int y;
@@ -9,6 +11,12 @@ public final class Pt {
 	public Pt(int y, int x) {
 		this.y = y;
 		this.x = x;
+	}
+	
+	public Pt(String rep) {
+		String[] parts = rep.split("/");
+		y = Integer.parseInt(parts[0]);
+		x = Integer.parseInt(parts[1]);
 	}
 	
 	public boolean equals(Object o2) {
@@ -27,5 +35,10 @@ public final class Pt {
 	
 	public String toString() {
 		return "{\"y\":" + y + "\", \"x\":" + x + "\"}";
+	}
+
+	@Override
+	public String getRepresentation() {
+		return y + "/" + x;
 	}
 }

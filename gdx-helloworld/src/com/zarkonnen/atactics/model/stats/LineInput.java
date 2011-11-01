@@ -9,6 +9,7 @@ import java.util.List;
 
 public class LineInput implements Input {
 	private BufferedReader r;
+	public HashMap<String, String> aliases = new HashMap<String, String>();
 	
 	public LineInput(Reader r) { this.r = new BufferedReader(r); }
 	
@@ -21,10 +22,16 @@ public class LineInput implements Input {
 		String line = r.readLine();
 		if (line == null) { return null; }
 		List<String> tokens = tokenize(line);
+		while (tokens.size() == 3 && tokens.get(0).equals("alias")) {
+			aliases.put(tokens.get(1), tokens.get(2));
+			line = r.readLine();
+			if (line == null) { return null; }
+			tokens = tokenize(line);
+		}
 		if (tokens.size() != 3 || !tokens.get(2).equals("{")) {
 			throw new IOException("Bad line: " + line);
 		}
-		className = (String) tokens.get(0);
+		className = aliases.containsKey(tokens.get(0)) ? aliases.get(tokens.get(0)) : (String) tokens.get(0);
 		id = new ID((String) tokens.get(1));
 		while (true) {
 			line = r.readLine();
@@ -36,10 +43,10 @@ public class LineInput implements Input {
 			if (tokens.isEmpty() || tokens.get(0).startsWith("#")) {
 				continue;
 			}
-			if (tokens.size() != 3 || !tokens.get(1).equals("=")) {
+			if ((tokens.size() != 3 && !(tokens.size() == 4 && tokens.get(2).startsWith("#"))) || !tokens.get(1).equals("=")) {
 				throw new IOException("Bad line: " + line);
 			}
-			Object value = interpretValue(tokens.get(2));
+			Object value = interpretValue(tokens.get(2), tokens.size() == 4 ? tokens.get(3) : null);
 			mapping.put(new Stat(tokens.get(0)), value);
 		}
 		return new IOObject(className, id, mapping);
@@ -90,7 +97,7 @@ public class LineInput implements Input {
 		return os;
 	}
 	
-	private static Object interpretValue(String s) {
+	private Object interpretValue(String s, String s2) {
 		if (s.startsWith("\"") && s.endsWith("\"")) {
 			return s.substring(1, s.length() - 1);
 		}
@@ -108,6 +115,14 @@ public class LineInput implements Input {
 		}
 		if (s.equals("true") || s.equals("false")) {
 			return s.equals("true") ? Boolean.TRUE : Boolean.FALSE;
+		}
+		if (s.startsWith("#")) {
+			String className = aliases.containsKey(s.substring(1)) ? aliases.get(s.substring(1)) : s.substring(1);
+			try {
+				return Class.forName(className).getConstructor(String.class).newInstance(s2);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 		return Integer.parseInt(s);
 	}
