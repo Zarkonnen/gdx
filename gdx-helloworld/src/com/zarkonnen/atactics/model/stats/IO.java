@@ -65,6 +65,7 @@ public class IO {
 		if (o instanceof Double)  { return false; }
 		if (o instanceof Float)   { return false; }
 		if (o instanceof HasStringRepresentation) { return false; }
+		if (o instanceof Enum<?>)    { return false; }
 		return true;
 	}
 	

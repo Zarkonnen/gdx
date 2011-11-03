@@ -11,5 +11,6 @@ public class ShipType extends StatObject {
 		stat(EVASION, withDefault(var(EVASION), constant(EVASION, 0)));
 		stat(DAMAGE, withDefault(var(DAMAGE), constant(DAMAGE, 0)));
 		stat(NUM_ATTACKS, withDefault(var(NUM_ATTACKS), constant(NUM_ATTACKS, 1)));
+		stat(RANGE, var(RANGE));
 	}
 }

@@ -97,6 +97,7 @@ public class LineInput implements Input {
 		return os;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Object interpretValue(String s, String s2) {
 		if (s.startsWith("\"") && s.endsWith("\"")) {
 			return s.substring(1, s.length() - 1);
@@ -119,7 +120,12 @@ public class LineInput implements Input {
 		if (s.startsWith("#")) {
 			String className = aliases.containsKey(s.substring(1)) ? aliases.get(s.substring(1)) : s.substring(1);
 			try {
-				return Class.forName(className).getConstructor(String.class).newInstance(s2);
+				Class<?> cl = Class.forName(className);
+				if (cl.getSuperclass().equals(Enum.class)) {
+					return Enum.valueOf((Class<? extends Enum>) cl, s2);
+				} else {
+					return Class.forName(className).getConstructor(String.class).newInstance(s2);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

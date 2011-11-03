@@ -12,12 +12,16 @@ import com.zarkonnen.atactics.model.Mission;
 import com.zarkonnen.atactics.model.GameMap;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
+import com.zarkonnen.atactics.model.Range;
 import com.zarkonnen.atactics.model.Ship;
+import com.zarkonnen.atactics.model.ShipType;
 import com.zarkonnen.atactics.model.SpaceTile;
 import com.zarkonnen.atactics.model.stats.IO;
 import com.zarkonnen.atactics.model.stats.LineInput;
 import com.zarkonnen.atactics.model.stats.LineOutput;
 import com.zarkonnen.atactics.model.stats.StatObject;
+import static com.zarkonnen.atactics.model.Stats.*;
+
 
 public class HelloWorld implements ApplicationListener {
 	private GameWorld w;
@@ -56,7 +60,6 @@ public class HelloWorld implements ApplicationListener {
 	@Override
 	public void create() {
 		input = new MyInput();
-		//Gdx.input.setInputProcessor(new GestureDetector(input));
 		Gdx.input.setInputProcessor(im);
 		im.addProcessor(new GestureDetector(input));
 		w = new GameWorld();
@@ -68,14 +71,25 @@ public class HelloWorld implements ApplicationListener {
 			Pt p = new Pt(y, x);
 			gm.set(p, new SpaceTile(p));
 		}}
-		gm.get(new Pt(1, 2)).set(SpaceTile.SHIP, new Ship());
-		gm.get(new Pt(2, 2)).set(SpaceTile.SHIP, new Ship());
+		ShipType corvette = new ShipType();
+		corvette.set(NAME, "Corvette");
+		corvette.set(SPEED, 3);
+		corvette.set(RANGE, Range.MEDIUM);
+		corvette.set(DAMAGE, 3);
+		corvette.set(MAX_HP, 6);
+		Ship s1 = new Ship();
+		s1.set(SHIP_TYPE, corvette);
+		Ship s2 = new Ship();
+		s2.set(SHIP_TYPE, corvette);
+		gm.get(new Pt(1, 2)).set(SpaceTile.SHIP, s1);
+		gm.get(new Pt(2, 2)).set(SpaceTile.SHIP, s2);
 		d = new Display(w);
 		c = new ScrollControls(input, d);
 		w.sl = new ServerLink();
 		w.sl.d = d;
 		w.sl.w = w;
 		im.addProcessor(d.stage);
+		
 		//Gdx.input.setInputProcessor(d.stage);
 		try {
 			StringWriter sw = new StringWriter();

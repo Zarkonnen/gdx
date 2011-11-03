@@ -28,7 +28,7 @@ public class LineOutput implements Output {
 			w.println("alias " + alias + " " + ioo.className);
 		}
 		for (Object o : ioo.mapping.values()) {
-			if (o instanceof HasStringRepresentation) {
+			if (o instanceof HasStringRepresentation || o instanceof Enum<?>) {
 				if (!aliases.containsKey(o.getClass().getName())) {
 					String alias = createAlias(o.getClass().getName());
 					aliases.put(o.getClass().getName(), alias);
@@ -73,6 +73,9 @@ public class LineOutput implements Output {
 		}
 		if (o instanceof HasStringRepresentation) {
 			return "#" + aliases.get(o.getClass().getName()) + " " + escape(((HasStringRepresentation) o).getRepresentation(), false);
+		}
+		if (o instanceof Enum<?>) {
+			return "#" + aliases.get(o.getClass().getName()) + " " + escape(((Enum<?>) o).name(), false);
 		}
 		
 		throw new RuntimeException("Don't know how to represent a " + o.getClass().getName() + ".");
