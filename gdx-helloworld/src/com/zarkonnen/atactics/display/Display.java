@@ -16,8 +16,12 @@ import com.zarkonnen.atactics.model.Mission;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
 import com.zarkonnen.atactics.model.Ship;
+import com.zarkonnen.atactics.model.ShipEffect;
 import com.zarkonnen.atactics.model.Stats;
 import com.zarkonnen.atactics.model.SpaceTile;
+import com.zarkonnen.atactics.model.stats.Stat;
+import static com.zarkonnen.atactics.model.Stats.*;
+
 
 public class Display {
 	public String console = "";
@@ -26,9 +30,17 @@ public class Display {
 	GameWorld w;
     public Stage stage;
     public Group scrollables;
+    public Group info;
+    	public Label nameL;
+    	public Label attackL;
+    	public Label hpL;
+    	public Label speedL;
+    	public Label fxL;
     public Label consoleLabel;
     public HashMap<Ship, ShipActor> shipToActor = new HashMap<Ship, ShipActor>();
     public Sounds sounds = new Sounds();
+    
+    static final int LABEL_SPACING = 20;
 
 	public Display(GameWorld w) {
 		this.w = w;
@@ -61,11 +73,44 @@ public class Display {
 		LabelStyle ls = new LabelStyle(bmf, new Color(1.0f, 1.0f, 1.0f, 1.0f));
 		consoleLabel = new Label("", ls);
 		stage.addActor(consoleLabel);
+		
+		info = new Group("Info");
+		stage.addActor(info);
+			info.addActor(nameL = new Label("", ls));
+				nameL.y = LABEL_SPACING * 4;
+				info.addActor(attackL = new Label("", ls));
+				attackL.y = LABEL_SPACING * 3;
+				info.addActor(hpL = new Label("", ls));
+				hpL.y = LABEL_SPACING * 2;
+				info.addActor(speedL = new Label("", ls));
+				speedL.y = LABEL_SPACING;
+				info.addActor(fxL = new Label("", ls));
+	}
+	
+	void updateInfo() {
+		Ship s = w.get(GameWorld.MISSION).get(Mission.SELECTION);
+		if (s == null) {
+			
+		} else {
+			nameL.setText(s.get(Stat.NAME));
+			int na = s.get(NUM_ATTACKS);
+			attackL.setText(na == 0 ? "unarmed" : (s.get(DAMAGE) + " dmg" + (na > 1 ? "x" + na : "")) + " " + s.get(RANGE).name);
+			hpL.setText(s.get(HP) + "/" + s.get(MAX_HP) + " HP");
+			int evade = s.get(EVASION);
+			speedL.setText(s.get(MOVES_LEFT) + "/" + s.get(SPEED) + " moves" + (evade > 0 ? evade + "% evade" : ""));
+			StringBuilder fxSB = new StringBuilder();
+			for (ShipEffect e : s.get(EFFECTS)) {
+				fxSB.append(e.get(NAME));
+				fxSB.append("\n");
+			}
+			fxL.setText(fxSB.toString());
+		}
 	}
 	
 	public void draw() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		consoleLabel.setText(console);
+		updateInfo();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}

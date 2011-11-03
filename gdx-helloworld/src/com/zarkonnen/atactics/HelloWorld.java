@@ -79,8 +79,10 @@ public class HelloWorld implements ApplicationListener {
 		corvette.set(MAX_HP, 6);
 		Ship s1 = new Ship();
 		s1.set(SHIP_TYPE, corvette);
+		s1.set(NAME, "Fruitbat");
 		Ship s2 = new Ship();
 		s2.set(SHIP_TYPE, corvette);
+		s2.set(NAME, "Iguanadon");
 		gm.get(new Pt(1, 2)).set(SpaceTile.SHIP, s1);
 		gm.get(new Pt(2, 2)).set(SpaceTile.SHIP, s2);
 		d = new Display(w);
@@ -91,7 +93,7 @@ public class HelloWorld implements ApplicationListener {
 		im.addProcessor(d.stage);
 		
 		//Gdx.input.setInputProcessor(d.stage);
-		try {
+		/*try {
 			StringWriter sw = new StringWriter();
 			HashMap<String, StatObject> heads = new HashMap<String, StatObject>();
 			heads.put("gamestate", w);
@@ -101,6 +103,6 @@ public class HelloWorld implements ApplicationListener {
 			sw = new StringWriter();
 			new IO().write(new LineOutput(sw), heads);
 			System.out.println(sw.getBuffer().toString());
-		} catch (Throwable e) { d.console = e.getClass().getSimpleName() + " " + e.getMessage(); }
+		} catch (Throwable e) { d.console = e.getClass().getSimpleName() + " " + e.getMessage(); }*/
 	}
 }
