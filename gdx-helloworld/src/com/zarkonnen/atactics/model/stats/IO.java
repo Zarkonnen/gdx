@@ -92,12 +92,8 @@ public class IO {
 				StatObject obj = (StatObject) Class.forName(ioo.className).newInstance();
 				iooToSO.put(ioo, obj);
 				idToObj.put(ioo.id.id, obj instanceof HelperObject ? ((HelperObject) obj).createRealObject() : obj);
-			} catch (ClassNotFoundException cnfe) {
-				throw new IOException(cnfe);
-			} catch (IllegalAccessException iae) {
-				throw new IOException(iae);
-			} catch (InstantiationException ie) {
-				throw new IOException(ie);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 		}
 		for (Map.Entry<IOObject, StatObject> iooAndSO : iooToSO.entrySet()) {

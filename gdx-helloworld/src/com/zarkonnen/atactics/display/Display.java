@@ -3,10 +3,14 @@ package com.zarkonnen.atactics.display;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.zarkonnen.atactics.Sounds;
 import com.zarkonnen.atactics.model.Fight;
 import com.zarkonnen.atactics.model.GameWorld;
@@ -16,11 +20,13 @@ import com.zarkonnen.atactics.model.Stats;
 import com.zarkonnen.atactics.model.SpaceTile;
 
 public class Display {
+	public String console = "";
 	public Texture hexT;
 	public Texture shipT;
 	GameWorld w;
     public Stage stage;
     public Group scrollables;
+    public Label consoleLabel;
     public HashMap<Ship, ShipActor> shipToActor = new HashMap<Ship, ShipActor>();
     public Sounds sounds = new Sounds();
 
@@ -50,10 +56,15 @@ public class Display {
 				scrollables.addActor(sa);
 			}
 		}
+		BitmapFont bmf = new BitmapFont();
+		LabelStyle ls = new LabelStyle(bmf, new Color(1.0f, 1.0f, 1.0f, 1.0f));
+		consoleLabel = new Label("", ls);
+		stage.addActor(consoleLabel);
 	}
 	
 	public void draw() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		consoleLabel.setText(console);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}

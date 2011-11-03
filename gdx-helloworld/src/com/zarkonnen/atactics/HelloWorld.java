@@ -7,6 +7,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.utils.Logger;
 import com.zarkonnen.atactics.display.Display;
 import com.zarkonnen.atactics.model.Fight;
 import com.zarkonnen.atactics.model.GameMap;
@@ -88,6 +89,6 @@ public class HelloWorld implements ApplicationListener {
 			sw = new StringWriter();
 			new IO().write(new LineOutput(sw), heads);
 			System.out.println(sw.getBuffer().toString());
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Throwable e) { d.console = e.getClass().getSimpleName() + " " + e.getMessage(); }
 	}
 }
