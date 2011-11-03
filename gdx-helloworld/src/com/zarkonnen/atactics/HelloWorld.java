@@ -7,9 +7,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.utils.Logger;
 import com.zarkonnen.atactics.display.Display;
-import com.zarkonnen.atactics.model.Fight;
+import com.zarkonnen.atactics.model.Mission;
 import com.zarkonnen.atactics.model.GameMap;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
@@ -26,7 +25,6 @@ public class HelloWorld implements ApplicationListener {
 	private MyInput input;
 	private ScrollControls c;
 	private InputMultiplexer im = new InputMultiplexer();
-
 	
 	@Override
 	public void resume() {
@@ -62,9 +60,10 @@ public class HelloWorld implements ApplicationListener {
 		Gdx.input.setInputProcessor(im);
 		im.addProcessor(new GestureDetector(input));
 		w = new GameWorld();
-		w.f = new Fight();
+		Mission f = new Mission();
+		w.set(GameWorld.MISSION, f);
 		GameMap<SpaceTile> gm = new GameMap<SpaceTile>(4, 4, SpaceTile.class);
-		w.f.set(Fight.MAP, gm);
+		f.set(Mission.MAP, gm);
 		for (int y = 0; y < 4; y++) { for (int x = 0; x < 4; x++) {
 			Pt p = new Pt(y, x);
 			gm.set(p, new SpaceTile(p));
@@ -73,16 +72,15 @@ public class HelloWorld implements ApplicationListener {
 		gm.get(new Pt(2, 2)).set(SpaceTile.SHIP, new Ship());
 		d = new Display(w);
 		c = new ScrollControls(input, d);
-		ServerLink sl = new ServerLink();
-		sl.d = d;
-		sl.w = w;
-		w.server = sl;
+		w.sl = new ServerLink();
+		w.sl.d = d;
+		w.sl.w = w;
 		im.addProcessor(d.stage);
 		//Gdx.input.setInputProcessor(d.stage);
 		try {
 			StringWriter sw = new StringWriter();
 			HashMap<String, StatObject> heads = new HashMap<String, StatObject>();
-			heads.put("fight", w.f);
+			heads.put("gamestate", w);
 			new IO().write(new LineOutput(sw), heads);
 			System.out.println(sw.getBuffer().toString());
 			heads = new IO().read(new LineInput(new StringReader(sw.getBuffer().toString())));

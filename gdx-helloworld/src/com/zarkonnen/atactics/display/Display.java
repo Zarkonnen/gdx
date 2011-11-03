@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.zarkonnen.atactics.Sounds;
-import com.zarkonnen.atactics.model.Fight;
+import com.zarkonnen.atactics.model.Mission;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
 import com.zarkonnen.atactics.model.Ship;
@@ -42,13 +42,14 @@ public class Display {
 		scrollables = new Group("Scrollables");
 		stage.addActor(scrollables);
 		scrollables.touchable = true;
-		for (Pt tileIndex : w.f.get(Fight.MAP).pts()) {
-			Pt screenPt = w.f.cs.pos(tileIndex);
-			scrollables.addActor(new TileActor(w.f.get(Fight.MAP).get(tileIndex), this, w, screenPt.x, screenPt.y));
+		Mission m = w.get(GameWorld.MISSION);
+		for (Pt tileIndex : m.get(Mission.MAP).pts()) {
+			Pt screenPt = m.cs.pos(tileIndex);
+			scrollables.addActor(new TileActor(m.get(Mission.MAP).get(tileIndex), this, w, screenPt.x, screenPt.y));
 		}
-		for (Pt tileIndex : w.f.get(Fight.MAP).pts()) {
-			SpaceTile t = w.f.get(Fight.MAP).get(tileIndex);
-			Pt screenPt = w.f.cs.pos(tileIndex);
+		for (Pt tileIndex : m.get(Mission.MAP).pts()) {
+			SpaceTile t = m.get(Mission.MAP).get(tileIndex);
+			Pt screenPt = m.cs.pos(tileIndex);
 			Ship ship = t.get(SpaceTile.SHIP);
 			if (ship != null) {
 				ShipActor sa = new ShipActor(ship, this, w, ship.get(Stats.DIRECTION), screenPt.x, screenPt.y);

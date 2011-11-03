@@ -3,7 +3,7 @@ package com.zarkonnen.atactics.display;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.zarkonnen.atactics.commands.MoveCommand;
-import com.zarkonnen.atactics.model.Fight;
+import com.zarkonnen.atactics.model.Mission;
 import com.zarkonnen.atactics.model.GameWorld;
 import com.zarkonnen.atactics.model.Pt;
 import com.zarkonnen.atactics.model.SpaceTile;
@@ -29,8 +29,9 @@ public class TileActor extends Actor {
 
 	@Override
 	public Actor hit(float x, float y) {
-		if (x < 0 || y < 0 || x > w.f.csW || y > w.f.csH) { return null; }
-		return w.f.cs.find(new Pt((int) y, (int) x)).equals(Pt.ORIGIN) ? this : null;
+		Mission m = w.get(GameWorld.MISSION);
+		if (x < 0 || y < 0 || x > m.csW || y > m.csH) { return null; }
+		return m.cs.find(new Pt((int) y, (int) x)).equals(Pt.ORIGIN) ? this : null;
 	}
 	
 	@Override
@@ -41,11 +42,12 @@ public class TileActor extends Actor {
 	
 	@Override
 	public void touchUp(float x, float y, int ptr) {
-		if (w.f.get(Fight.SELECTION) != null) {
-			Pt shipC = w.f.find(w.f.get(Fight.SELECTION));
-			int dir = w.f.cs.direction(shipC, t.get(SpaceTile.COORD));
+		Mission m = w.get(GameWorld.MISSION);
+		if (m.get(Mission.SELECTION) != null) {
+			Pt shipC = m.find(m.get(Mission.SELECTION));
+			int dir = m.cs.direction(shipC, t.get(SpaceTile.COORD));
 			if (dir != -1) {
-				w.server.submitCommand(new MoveCommand(w.f.get(Fight.SELECTION), t.get(SpaceTile.COORD)));
+				w.sl.submitCommand(new MoveCommand(m.get(Mission.SELECTION), t.get(SpaceTile.COORD)));
 			}
 		}
 	}

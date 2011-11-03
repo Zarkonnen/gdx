@@ -6,7 +6,7 @@ import com.zarkonnen.atactics.model.stats.StatObject;
 import static com.zarkonnen.atactics.model.stats.GetStrategy.*;
 import static com.zarkonnen.atactics.model.stats.ChangeStrategy.*;
 
-public class Fight extends StatObject {
+public class Mission extends StatObject {
 	public final int csW = 64;
 	public final int csH = 47;
 	public static final Stat<GameMap<SpaceTile>> MAP = new Stat<GameMap<SpaceTile>>("Map");
@@ -25,7 +25,7 @@ public class Fight extends StatObject {
 		return null;
 	}
 	
-	public Fight() {
+	public Mission() {
 		stat(MAP, var(MAP));
 		stat(SELECTION, var(SELECTION), setOnly(SELECTION));
 		stat(TARGET, var(TARGET), setOnly(TARGET));
